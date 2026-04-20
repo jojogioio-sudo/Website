@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zivildienst Job Bewertung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Zivildienst Job Bewertungen</h1>
+      <p>Teile deine Erfahrungen und lies, was andere über Zivildienst-Stellen denken</p>
+    </header>
+
+    <main>
+      <section class="search-section">
+        <h2>Jobnummer eingeben</h2>
+        <div class="input-group">
+          <input type="text" id="jobNumberInput" placeholder="z.B. 12345" maxlength="20">
+          <button onclick="loadRatings()">Bewertungen anzeigen</button>
+        </div>
+      </section>
+
+      <section id="ratingsSection" class="ratings-section" style="display: none;">
+        <h2>Bewertungen für Job <span id="currentJobNumber"></span></h2>
+
+        <div class="add-rating">
+          <h3>Eigene Bewertung hinzufügen</h3>
+          <form onsubmit="submitRating(event)">
+            <div class="form-group">
+              <label for="rating">Bewertung (1-5 Sterne):</label>
+              <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required>
+                <label for="star5" class="star">★</label>
+                <input type="radio" id="star4" name="rating" value="4" required>
+                <label for="star4" class="star">★</label>
+                <input type="radio" id="star3" name="rating" value="3" required>
+                <label for="star3" class="star">★</label>
+                <input type="radio" id="star2" name="rating" value="2" required>
+                <label for="star2" class="star">★</label>
+                <input type="radio" id="star1" name="rating" value="1" required>
+                <label for="star1" class="star">★</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="comment">Kommentar:</label>
+              <textarea id="comment" placeholder="Teile deine Erfahrung..." required minlength="10" maxlength="1000"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Bewertung abschicken</button>
+          </form>
+        </div>
+
+        <div class="comments-list" id="commentsList">
+          <p class="loading">Lädt Kommentare...</p>
+        </div>
+      </section>
+
+      <div id="noJobSelected" class="info-box">
+        <p>Gib eine Jobnummer ein, um Bewertungen zu sehen und zu schreiben</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
