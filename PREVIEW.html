@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zivildienst Rating - Preview</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .info-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .info-box h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .info-box p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .button-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: #5568d3;
+    }
+
+    .button-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid #ddd;
+    }
+
+    .button-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .iframe-container {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .status-loading {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-box">
+      <h1>🎯 Zivildienst Rating Website Preview</h1>
+      <p>Diese Preview zeigt deine Website in Echtzeit. Um sie zu nutzen, brauchst du eine der folgenden Optionen:</p>
+
+      <h2 style="font-size: 1.2em; margin-top: 20px; margin-bottom: 10px;">Option 1: Lokal auf localhost:3000</h2>
+      <p>Wenn du <code>npm start</code> in einem Terminal ausgeführt hast:</p>
+      <button class="button button-primary" onclick="loadPreview('http://localhost:3000')">
+        🚀 Öffne localhost:3000 Preview
+      </button>
+
+      <h2 style="font-size: 1.2em; margin-top: 20px; margin-bottom: 10px;">Option 2: Auf Railway deployed</h2>
+      <p>Nach dem Deployment auf Railway erhältst du eine URL wie:</p>
+      <code style="background: #f5f5f5; padding: 8px; border-radius: 4px; display: block; margin: 10px 0;">
+        https://website-production-xxxx.up.railway.app
+      </code>
+      <p style="margin-top: 10px;">Gib deine Railway-URL hier ein:</p>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" id="railwayUrl" placeholder="https://website-production-xxxx.up.railway.app"
+               style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 4px;">
+        <button class="button button-primary" onclick="loadFromInput()">Laden</button>
+      </div>
+
+      <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 4px;">
+        <strong>💡 Tipp:</strong> Nach dem Laden kannst du die Website testen:
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>Gib eine Jobnummer ein (z.B. "12345")</li>
+          <li>Klick "Bewertungen anzeigen"</li>
+          <li>Schreib eine Bewertung mit Kommentar</li>
+          <li>Sieh die Bewertungen anderer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="status"></div>
+    <div id="previewContainer" class="iframe-container" style="display: none;">
+      <iframe id="preview" sandbox="allow-same-origin allow-forms allow-popups allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <script>
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = message;
+      statusEl.className = `status status-${type}`;
+      statusEl.style.display = 'block';
+    }
+
+    function loadPreview(url) {
+      try {
+        const preview = document.getElementById('preview');
+        const container = document.getElementById('previewContainer');
+
+        showStatus('⏳ Lädt Preview...', 'loading');
+
+        preview.src = url;
+        container.style.display = 'block';
+
+        // Check if server is accessible
+        fetch(url, { mode: 'no-cors' })
+          .then(() => {
+            showStatus('✅ Website erfolgreich geladen!', 'success');
+          })
+          .catch(() => {
+            showStatus('⚠️ Server antwortet nicht. Stelle sicher, dass npm start läuft.', 'error');
+          });
+      } catch (err) {
+        showStatus('❌ Fehler: ' + err.message, 'error');
+      }
+    }
+
+    function loadFromInput() {
+      const url = document.getElementById('railwayUrl').value.trim();
+      if (!url) {
+        showStatus('❌ Bitte gib eine URL ein', 'error');
+        return;
+      }
+      if (!url.startsWith('http')) {
+        showStatus('❌ URL muss mit http:// oder https:// beginnen', 'error');
+        return;
+      }
+      loadPreview(url);
+    }
+
+    // Allow Enter key in input
+    document.getElementById('railwayUrl').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') loadFromInput();
+    });
+  </script>
+</body>
+</html>
